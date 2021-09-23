@@ -10,9 +10,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
-driver = webdriver.Firefox()
 
 def login():
+    global driver
+    driver = webdriver.Firefox()
     print("Logging in. ", end='')
     driver.get('http://libgen.lc/librarian.php')
     driver.find_element_by_link_text('Login').click()
@@ -21,6 +22,7 @@ def login():
     driver.find_element_by_id('autologin').click()
     driver.find_element_by_class_name('button1').click()
     print("Logged in.")
+    driver.get('http://libgen.lc/librarian.php')
 
 upload_dir = '~/to_upload/' # ←CHANGE ME!
 uploaded_dir = '~/uploaded/' # ←CHANGE ME!
@@ -33,11 +35,12 @@ files = sorted(files, key=sortKey) #ascending sort by size: https://stackoverflo
 
 login()
 for f in files:
-    print('\nUploading: '+f)
     driver.get('http://libgen.lc/librarian.php')
+    print('\nUploading: '+f)
     try:
         driver.find_element_by_xpath('//*[@id="pre_l"]').click()
     except:
+        driver.quit()
         login()
         driver.find_element_by_xpath('//*[@id="pre_l"]').click()
     file_input = driver.find_element_by_id('addfiletoeditionfile')
