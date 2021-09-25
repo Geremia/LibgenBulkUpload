@@ -2,6 +2,7 @@
 # '-u' is unbuffered output: https://stackoverflow.com/a/18709945/1429450
 
 import os
+import sys
 import re
 from selenium import webdriver
 from selenium.webdriver.support.select import Select
@@ -10,6 +11,24 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
+if len(sys.argv) != 4:
+    print("""3 args required:
+    relative path of directory of
+            (1) files to upload
+            (2) uploaded files
+            (3) rejected files""")
+    sys.exit(1)
+
+upload_dir = os.getcwd()+'/'+sys.argv[1]+'/'
+uploaded_dir = os.getcwd()+'/'+sys.argv[2]+'/'
+rejects_dir = os.getcwd()+'/'+sys.argv[3]+'/'
+
+print("Specified directories:")
+for i in [upload_dir, uploaded_dir, rejects_dir]:
+    print(i)
+    if not os.path.isdir(i):
+        os.mkdir(i)
+print()
 
 def login():
     global driver
@@ -24,9 +43,6 @@ def login():
     print("Logged in.")
     driver.get('http://libgen.lc/librarian.php')
 
-upload_dir = '~/to_upload/' # ←CHANGE ME!
-uploaded_dir = '~/uploaded/' # ←CHANGE ME!
-
 def sortKey(filename):
     return os.path.getsize(upload_dir+filename)
 
@@ -37,12 +53,14 @@ login()
 for f in files:
     driver.get('http://libgen.lc/librarian.php')
     print('\nUploading: '+f)
-    try:
-        driver.find_element_by_xpath('//*[@id="pre_l"]').click()
-    except:
-        driver.quit()
-        login()
-        driver.find_element_by_xpath('//*[@id="pre_l"]').click()
+    while True:
+        try:
+            driver.find_element_by_xpath('//*[@id="pre_l"]').click()
+            break
+        except:
+            driver.quit()
+            login()
+            continue
     file_input = driver.find_element_by_id('addfiletoeditionfile')
     file_input.send_keys(upload_dir + f)
     driver.find_element_by_id('upload-file').click()
@@ -82,7 +100,8 @@ for f in files:
         title_field = WebDriverWait(driver,1).until(EC.presence_of_element_located((By.ID, "title")))
         print('∃ title field.')
     except TimeoutException:
-        print('Title field not found. Continuing.')
+        print('Title field not found. Moving to rejects dir.')
+        os.rename(upload_dir+f, rejects_dir+f)
         continue
 
     print("Entering data.")
