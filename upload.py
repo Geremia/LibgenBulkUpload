@@ -112,7 +112,9 @@ for f in files:
     #update author field
     author = os.path.splitext(s[1])[0]
     author = re.sub(r'_$', '.', author)
-    driver.find_element_by_id('author').send_keys(author)
+    author_field = driver.find_element_by_id('author')
+    author_field.clear()
+    author_field.send_keys(author)
     # courtesy: 𝘗𝘺𝘵𝘩𝘰𝘯 𝘛𝘦𝘴𝘵𝘪𝘯𝘨 𝘸𝘪𝘵𝘩 𝘚𝘦𝘭𝘦𝘯𝘪𝘶𝘮 EPUB ref:7.60
     type_selector = driver.find_element_by_xpath('//*[@id="type"]')
     select_list=Select(type_selector)
