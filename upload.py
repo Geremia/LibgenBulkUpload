@@ -35,11 +35,12 @@ def login():
     driver = webdriver.Firefox()
     print("Logging in. ", end='')
     driver.get('http://libgen.lc/librarian.php')
+
+    driver.add_cookie({'name':'phpbb3_9na6l_u', 'value':'1602'})
+    driver.add_cookie({'name':'phpbb3_9na6l_k', 'value':'ut23g0s85weg7k5z'})
+    driver.add_cookie({'name':'phpbb3_9na6l_sid', 'value':'e2d3381ffb8118e1ecb23db6ea2eefee'})
+
     driver.find_element_by_link_text('Login').click()
-    driver.find_element_by_id('username').send_keys('genesis')
-    driver.find_element_by_id('password').send_keys('upload')
-    driver.find_element_by_id('autologin').click()
-    driver.find_element_by_class_name('button1').click()
     print("Logged in.")
     driver.get('http://libgen.lc/librarian.php')
 
@@ -48,6 +49,9 @@ def sortKey(filename):
 
 files = os.listdir(upload_dir)
 files = sorted(files, key=sortKey) #ascending sort by size: https://stackoverflow.com/a/20253803/1429450
+if len(files) == 0:
+    print("No books to upload.")
+    exit()
 
 login()
 for f in files:
@@ -123,5 +127,6 @@ for f in files:
     driver.find_element_by_xpath('/html/body/div[2]/button').click()
     os.rename(upload_dir+f, uploaded_dir+f)
 
+print('Driver quitting…', end='')
 driver.quit()
 
