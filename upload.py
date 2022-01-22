@@ -11,12 +11,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 
-if len(sys.argv) != 4:
-    print("""3 args required:
+if len(sys.argv) != 5:
+    print("""4 args required:
     relative path of directory of
             (1) files to upload
             (2) uploaded files
-            (3) rejected files""")
+            (3) rejected files
+            (4) phpbb3_9na6l_sid session ID""")
     sys.exit(1)
 
 upload_dir = os.getcwd()+'/'+sys.argv[1]+'/'
@@ -37,8 +38,8 @@ def login():
     driver.get('http://libgen.lc/librarian.php')
 
     driver.add_cookie({'name':'phpbb3_9na6l_u', 'value':'1602'})
-    driver.add_cookie({'name':'phpbb3_9na6l_k', 'value':'ut23g0s85weg7k5z'})
-    driver.add_cookie({'name':'phpbb3_9na6l_sid', 'value':'e2d3381ffb8118e1ecb23db6ea2eefee'})
+    driver.add_cookie({'name':'phpbb3_9na6l_k', 'value':''})
+    driver.add_cookie({'name':'phpbb3_9na6l_sid', 'value':sys.argv[4]})
 
     driver.find_element_by_link_text('Login').click()
     print("Logged in.")
@@ -127,6 +128,6 @@ for f in files:
     driver.find_element_by_xpath('/html/body/div[2]/button').click()
     os.rename(upload_dir+f, uploaded_dir+f)
 
-print('Driver quitting…', end='')
+print('Driver quitting…')
 driver.quit()
 
