@@ -1,29 +1,59 @@
 # LibgenBulkUpload
-bulk upload files to [http://libgen.lc/librarian.php](http://libgen.lc/librarian.php) ([Selenium](https://isidore.co/calibre/#panel=book_details&book_id=8602) script)
+bulk upload files to [https://library.bz/main/upload/](https://library.bz/main/upload/) (`bash` script)
 
 ## Usage
-```./upload.py to_upload uploaded rejects```
+```bash
+./upload.bash file_to_upload title two_char_language_code main_or_fiction
+```
 
-So title and author metadata is set on LibGen, uploaded files should be in the [Calibre](https://calibre-ebook.com/) format, e.g.:
+## Specifying additional metadata
 
-    TITLE - AUTHOR.suffix
+Example
 
-where suffix is one of the LibGen supported formats
+```bash
+isbn=9783868386066 authors='Feser, Edward' ./upload.bash Immortal_Souls.pdf 'Immortal Souls: A Treatise on Human Nature' en
+```
 
- - cbr
- - cbz
- - chm
- - djvu
- - doc
- - docx
- - epub
- - fb2
- - mobi
- - pdf
- - rar
- - rtf
- - zip
+The following metadata can be optionally passed as an environment variable to the script:
 
-e.g.:
-
-    The Nature of Thermodynamics - Bridgman, Percy Williams.djvu
+ - asin
+ - authors
+ - bookmarks
+ - city
+ - cleaned
+ - colored
+ - cover
+ - ddc
+ - description
+ - doi
+ - dpi
+ - dpi_select
+ - edition
+ - file_commentary
+ - file_source
+ - file_source_issue
+ - gb_id
+ - isbn
+ - issn
+ - language
+ - language_options
+ - lbc
+ - lcc
+ - metadata_query
+ - metadata_source
+ - ol_id
+ - page_orientation
+ - pages
+ - paginated
+ - periodical
+ - publisher
+ - scan
+ - series
+ - sfearchable
+ - tags
+ - title
+ - toc
+ - topic
+ - udc
+ - volume
+ - year
