@@ -6,7 +6,8 @@ language=${3:?Language}
 mainOrFiction=${4:?Upload to \'main\' or \'fiction\'?}
 md5sum=`md5sum -z "$file" | sed 's/ .*//'`
 upload_url="https://library.bz/$mainOrFiction/upload/"
-data_entry_url="https://library.bz/$mainOrFiction/uploads/edit/$md5sum"
+data_entry_url="https://library.bz/$mainOrFiction/uploads/new/$md5sum"
+edit_done_url="https://library.bz/$mainOrFiction/uploads/edit/$md5sum/done"
 
 # All optional and required variables
 vars=( "metadata_source" "metadata_query" "title" "volume" "authors" "language" "language_options" "edition" "series" "pages" "year" "publisher" "city" "periodical" "isbn" "issn" "doi" "gb_id" "asin" "ol_id" "ddc" "lcc" "udc" "lbc" "topic" "tags" "cover" "description" "toc" "scan" "dpi" "dpi_select" "sfearchable" "paginated" "page_orientation" "colored" "cleaned" "bookmarks" "file_source" "file_source_issue" "file_commentary" )
@@ -29,7 +30,7 @@ done
 data_raw="${data_raw%'&'}"
 pretty_data_str="${pretty_data_str%'\n'}"
 
-echo -e "Uploading at $upload_url…"
+echo -e "Uploading $file to $upload_url…"
 curl "$upload_url" -X POST  \
     -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0'  \
     -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'  \
@@ -46,7 +47,7 @@ curl "$upload_url" -X POST  \
     -H 'Sec-Fetch-Site: same-origin'  \
     -H 'Sec-Fetch-User: ?1'  \
     -H 'Priority: u=1'  \
-    -F "file=@$file" &> /dev/null
+    -F "file=@\"$file\"" &> /dev/null
 
 echo -e "Entering data\n$pretty_data_str\nat $data_entry_url…"
 curl -L "$data_entry_url" --compressed -X POST  \
@@ -64,5 +65,8 @@ curl -L "$data_entry_url" --compressed -X POST  \
     -H 'Sec-Fetch-Mode: navigate'  \
     -H 'Sec-Fetch-Site: same-origin'  \
     -H 'Sec-Fetch-User: ?1'  \
-    -H 'Priority: u=1' --data-raw "$data_raw" 2>&1 | \
-    grep -o "The record has been successfully saved." || echo -e "Problem with upload."
+    -H 'Priority: u=1' --data-raw "$data_raw" 2>&1 \
+    | grep -zo "The record has been successfully saved." && echo " $edit_done_url" && exit 0
+
+echo -e "Problem with upload (or already uploaded)." && exit 1
+
