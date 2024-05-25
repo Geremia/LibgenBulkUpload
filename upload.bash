@@ -7,7 +7,7 @@ mainOrFiction=${4:?Upload to \'main\' or \'fiction\'?}
 md5sum=`md5sum -z "$file" | sed 's/ .*//'`
 upload_url="https://library.bz/$mainOrFiction/upload/"
 data_entry_url="https://library.bz/$mainOrFiction/uploads/new/$md5sum"
-edit_done_url="https://library.bz/$mainOrFiction/uploads/edit/$md5sum/done"
+done_url="https://library.bz/$mainOrFiction/uploads/$md5sum"
 
 # All optional and required variables
 vars=( "metadata_source" "metadata_query" "title" "volume" "authors" "language" "language_options" "edition" "series" "pages" "year" "publisher" "city" "periodical" "isbn" "issn" "doi" "gb_id" "asin" "ol_id" "ddc" "lcc" "udc" "lbc" "topic" "tags" "cover" "description" "toc" "scan" "dpi" "dpi_select" "sfearchable" "paginated" "page_orientation" "colored" "cleaned" "bookmarks" "file_source" "file_source_issue" "file_commentary" )
@@ -66,7 +66,7 @@ curl -L "$data_entry_url" --compressed -X POST  \
     -H 'Sec-Fetch-Site: same-origin'  \
     -H 'Sec-Fetch-User: ?1'  \
     -H 'Priority: u=1' --data-raw "$data_raw" 2>&1 \
-    | grep -zo "The record has been successfully saved." && echo " $edit_done_url" && exit 0
+    | grep -zo "The record has been successfully saved." && echo " $done_url" && exit 0
 
 echo -e "Problem with upload (or already uploaded)." && exit 1
 
