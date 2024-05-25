@@ -27,7 +27,13 @@ The following metadata can be optionally passed as an environment variable to th
 
 ## Calibre
 
-If you [export a CSV catalog from Calibre](https://manual.calibre-ebook.com/gui.html#catalogs), you can use it with `calibre.py` to feed in the metadata for bulk book uploads, automatically. Be sure the first (left-most) column is the Calibre `id`. The specified "files to upload" directory is expected to contain symlinks to the files in your Calibre library.
+If you [export a CSV catalog from Calibre](https://manual.calibre-ebook.com/gui.html#catalogs), you can use it with `calibre.py` to feed in the metadata for bulk book uploads, automatically.
+
+Your Calibre catalog CSV file can have the following headings (in any order), including the custom ones (which begin with '#'):
+
+ - `#amazon`, `#doi`, `#google`, `#issn`, `#lcn`, `#pubyear`, `authors`, `comments`, `isbn`, `languages`, `publisher`, `series`, `series_index`, `tags`, `title`
+
+The specified "files to upload" directory is expected to contain symlinks to the files in your Calibre library.
 
 To setup the symlinks, execute a command like this in your upload directory:
 ```bash

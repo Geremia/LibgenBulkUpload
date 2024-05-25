@@ -71,13 +71,9 @@ calibre_metadata = [
         'title'
         ]
 
-# check that all the keys are present in the CSV
-for i in calibre_metadata:
-    if i not in book_catalog[0]:
-        print(i, 'not in supplied Calibre catalog CSV file.')
-        sys.exit(1)
-if header[0] != 'id':
-    print("Calibre catalog CSV file must have the 'id' column first (left-most).")
+# check that at least 'id' header exists
+if 'id' not in header:
+    print("Calibre catalog CSV file must have an 'id' column.")
     sys.exit(1)
 
 # corresponding Libgen metadata
@@ -115,14 +111,17 @@ for f in files:
         sys.exit(1)
 
     try:
-        book_entry = [item for item in book_catalog if item[0] == str(id)][0]
+        book_entry = [item for item in book_catalog if item[header.index('id')] == str(id)][0]
     except:
         print(id, "wasn't found in Calibre catalog CSV file " + catalog + ". Skipping.")
         continue
 
     env = {}
     for i in range(len(calibre_metadata)):
-        idx = header.index(calibre_metadata[i])
+        try:
+            idx = header.index(calibre_metadata[i])
+        except:
+            continue
         val = up.quote(book_entry[idx])
         if val:
             env[libgen_metadata[i]] = val
