@@ -39,7 +39,8 @@ if len(files) == 0:
 
 # Process Calibre catalog CSV
 nested_list = []
-with open(sys.argv[4], mode='r', newline='') as file:
+catalog = sys.argv[4]
+with open(catalog, mode='r', newline='') as file:
     csv_reader = csv.reader(file)
     for row in csv_reader:
         nested_list.append(row)
@@ -113,7 +114,11 @@ for f in files:
               + ' Be sure your uploads directory contains only symlinks to the files in your Calibre library.')
         sys.exit(1)
 
-    book_entry = [item for item in book_catalog if item[0] == str(id)][0]
+    try:
+        book_entry = [item for item in book_catalog if item[0] == str(id)][0]
+    except:
+        print(id, "wasn't found in Calibre catalog CSV file " + catalog + ". Skipping.")
+        continue
 
     env = {}
     for i in range(len(calibre_metadata)):
