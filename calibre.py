@@ -106,14 +106,14 @@ for f in files:
     try:
         id = re.findall('[0-9]+', parent)[-1]
     except:
-        print('No valid Calibre id found for ' + f
-              + ' Be sure your uploads directory contains only symlinks to the files in your Calibre library.')
+        print("No valid Calibre id found for '" + f
+              + "' Be sure your uploads directory contains only symlinks to the files in your Calibre library.")
         sys.exit(1)
 
     try:
         book_entry = [item for item in book_catalog if item[header.index('id')] == str(id)][0]
     except:
-        print(id, "wasn't found in Calibre catalog CSV file " + catalog + ". Skipping.")
+        print(id, "wasn't found in Calibre catalog CSV file '" + catalog + "'. Skipping.")
         continue
 
     env = {}
@@ -132,9 +132,9 @@ for f in files:
     process.communicate()
     rc = process.returncode
     if rc == 0:  # success
-        print('Moving ' + f + ' to ' + uploaded_dir + '.')
+        print("Moving '" + f + "' to '" + uploaded_dir + "'.")
         os.rename(upload_dir_f, uploaded_dir + f)
     else:  # failure
-        print('Moving ' + f + ' to ' + rejects_dir + '.')
+        print("Moving '" + f + "' to '" + rejects_dir + "'.")
         os.rename(upload_dir_f, rejects_dir + f)
 
