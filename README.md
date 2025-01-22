@@ -23,7 +23,7 @@ parallel -j1 ./upload.bash {} {.} eng main ::: *.pdf
 
 The following metadata can be optionally passed as an environment variable to the script:
 
- - `asin`, `authors`, `bookmarks`, `city`, `cleaned`, `colored`, `cover`, `ddc`, `description`, `doi`, `dpi`, `dpi_select`, `edition`, `file_commentary`, `file_source`, `file_source_issue`, `gb_id`, `isbn`, `issn`, `language`, `language_options`, `lbc`, `lcc`, `metadata_query`, `metadata_source`, `ol_id`, `page_orientation`, `pages`, `paginated`, `periodical`, `publisher`, `scan`, `series`, `sfearchable`, `tags`, `title`, `toc`, `topic`, `udc`, `volume`, `year`
+ - `asin`, `authors`, `bookmarks`, `city`, `cleaned`, `colored`, `cover`, `ddc`, `description`, `doi`, `dpi`, `dpi_select`, `edition`, `file_commentary`, `file_source`, `file_source_issue`, `gb_id`, `isbn`, `issn`, `language`, `language_options`, `lbc`, `lcc`, `metadata_query`, `metadata_source`, `ol_id`, `page_orientation`, `pages`, `paginated`, `periodical`, `publisher`, `scan`, `series`, `searchable`, `tags`, `title`, `toc`, `topic`, `udc`, `volume`, `year`
 
 ## Calibre
 
