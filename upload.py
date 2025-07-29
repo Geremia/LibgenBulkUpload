@@ -5,11 +5,12 @@ import os
 import sys
 import re
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
 
 if len(sys.argv) != 5:
     print("""4 args required:
@@ -33,17 +34,18 @@ print()
 
 def login():
     global driver
-    driver = webdriver.Firefox()
+    firefox_service = Service(executable_path="/usr/bin/geckodriver")
+    driver = webdriver.Firefox(service = firefox_service)
     print("Logging in. ", end='')
-    driver.get('http://libgen.lc/librarian.php')
+    driver.get('http://libgen.bz/librarian.php')
 
     driver.add_cookie({'name':'phpbb3_9na6l_u', 'value':'1602'})
     driver.add_cookie({'name':'phpbb3_9na6l_k', 'value':''})
     driver.add_cookie({'name':'phpbb3_9na6l_sid', 'value':sys.argv[4]})
 
-    driver.find_element_by_link_text('Login').click()
+    driver.find_element(By.LINK_TEXT, 'Login').click()
     print("Logged in.")
-    driver.get('http://libgen.lc/librarian.php')
+    driver.get('http://libgen.bz/librarian.php')
 
 def sortKey(filename):
     return os.path.getsize(upload_dir+filename)
@@ -56,24 +58,24 @@ if len(files) == 0:
 
 login()
 for f in files:
-    driver.get('http://libgen.lc/librarian.php')
+    driver.get('http://libgen.bz/librarian.php')
     print('\nUploading: '+f)
     while True:
         try:
-            driver.find_element_by_xpath('//*[@id="pre_l"]').click()
+            driver.find_element(By.XPATH, '//*[@id="pre_l"]').click()
             break
         except:
             driver.quit()
             login()
             continue
-    file_input = driver.find_element_by_id('addfiletoeditionfile')
+    file_input = driver.find_element(By.ID, 'addfiletoeditionfile')
     file_input.send_keys(upload_dir + f)
-    driver.find_element_by_id('upload-file').click()
+    driver.find_element(By.ID, 'upload-file').click()
     # Wait for page to load. 
     # courtesy: 𝘗𝘺𝘵𝘩𝘰𝘯 𝘛𝘦𝘴𝘵𝘪𝘯𝘨 𝘸𝘪𝘵𝘩 𝘚𝘦𝘭𝘦𝘯𝘪𝘶𝘮 EPUB ref:11.25
     # Files that take >1h skipped:
     try:
-        WebDriverWait(driver,3600).until(EC.staleness_of(driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/h2/button')))
+        WebDriverWait(driver,3600).until(EC.staleness_of(driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/h2/button')))
     except TimeoutException:
         print('Upload timedout. Continuing.')
         continue
@@ -93,7 +95,7 @@ for f in files:
     # if Bad Gateway
     try:
         print('Checking for presence of Bad Gateway.\t', end='')
-        WebDriverWait(driver,1).until(EC.presence_of_element_located((By.XPATH, "html body center h1")))
+        WebDriverWait(driver,1).until(EC.presence_of_element_located((By.XPATH, "/html/body/center/h1")))
         print('Bad Gateway found. Continuing.')
         continue
     except TimeoutException:
@@ -112,20 +114,20 @@ for f in files:
     print("Entering data.")
     s = re.split(' - ', f)
     #update title field
-    title_field = driver.find_element_by_id("title")
+    title_field = driver.find_element(By.ID, "title")
     title_field.send_keys(s[0])
     #update author field
     author = os.path.splitext(s[1])[0]
     author = re.sub(r'_$', '.', author)
-    author_field = driver.find_element_by_id('author')
+    author_field = driver.find_element(By.ID, 'author')
     author_field.clear()
     author_field.send_keys(author)
     # courtesy: 𝘗𝘺𝘵𝘩𝘰𝘯 𝘛𝘦𝘴𝘵𝘪𝘯𝘨 𝘸𝘪𝘵𝘩 𝘚𝘦𝘭𝘦𝘯𝘪𝘶𝘮 EPUB ref:7.60
-    type_selector = driver.find_element_by_xpath('//*[@id="type"]')
+    type_selector = driver.find_element(By.XPATH, '//*[@id="type"]')
     select_list=Select(type_selector)
     select_list.select_by_visible_text('book')
     #Register!
-    driver.find_element_by_xpath('/html/body/div[2]/button').click()
+    driver.find_element(By.XPATH, '/html/body/div[2]/button').click()
     os.rename(upload_dir+f, uploaded_dir+f)
 
 print('Driver quitting…')
