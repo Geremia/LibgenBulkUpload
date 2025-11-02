@@ -37,7 +37,7 @@ def login():
     firefox_service = Service(executable_path="/usr/bin/geckodriver")
     driver = webdriver.Firefox(service = firefox_service)
     print("Logging in. ", end='')
-    driver.get('http://libgen.bz/librarian.php')
+    driver.get('http://libgen.la/librarian.php')
 
     driver.add_cookie({'name':'phpbb3_9na6l_u', 'value':'1602'})
     driver.add_cookie({'name':'phpbb3_9na6l_k', 'value':''})
@@ -45,7 +45,7 @@ def login():
 
     driver.find_element(By.LINK_TEXT, 'Login').click()
     print("Logged in.")
-    driver.get('http://libgen.bz/librarian.php')
+    driver.get('http://libgen.la/librarian.php')
 
 def sortKey(filename):
     return os.path.getsize(upload_dir+filename)
@@ -58,7 +58,7 @@ if len(files) == 0:
 
 login()
 for f in files:
-    driver.get('http://libgen.bz/librarian.php')
+    driver.get('http://libgen.la/librarian.php')
     print('\nUploading: '+f)
     while True:
         try:
@@ -122,10 +122,6 @@ for f in files:
     author_field = driver.find_element(By.ID, 'author')
     author_field.clear()
     author_field.send_keys(author)
-    # courtesy: 𝘗𝘺𝘵𝘩𝘰𝘯 𝘛𝘦𝘴𝘵𝘪𝘯𝘨 𝘸𝘪𝘵𝘩 𝘚𝘦𝘭𝘦𝘯𝘪𝘶𝘮 EPUB ref:7.60
-    type_selector = driver.find_element(By.XPATH, '//*[@id="type"]')
-    select_list=Select(type_selector)
-    select_list.select_by_visible_text('book')
     #Register!
     driver.find_element(By.XPATH, '/html/body/div[2]/button').click()
     os.rename(upload_dir+f, uploaded_dir+f)
