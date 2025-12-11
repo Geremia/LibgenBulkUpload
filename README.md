@@ -1,5 +1,5 @@
 # LibgenBulkUpload
-bulk upload files to [http://libgen.lc/librarian.php](http://libgen.lc/librarian.php) ([Selenium](https://isidore.co/calibre/#panel=book_details&book_id=8602) script)
+bulk upload files to [http://libgen.la/librarian.php](http://libgen.la/librarian.php) ([Selenium](https://isidore.co/calibre/#panel=book_details&book_id=8602) script)
 
 ## Usage
 ```./upload.py to_upload uploaded rejects```
