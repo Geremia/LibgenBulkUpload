@@ -27,3 +27,12 @@ where suffix is one of the LibGen supported formats
 e.g.:
 
     The Nature of Thermodynamics - Bridgman, Percy Williams.djvu
+
+### Populate `upload` folder
+
+The `populate_upload.bash` script will populate the `upload` folder with symlinks to new files in your `~/CalibreLibrary` that you want to upload. It determines the latest upload file based on the newest file in `uploaded`. It uses the formats specified in the (one per line) `formats.txt` file.
+
+## References
+
+ - [Calibre](https://calibre-ebook.com/)
+ - Bodó, Balázs. “[The Genesis of Library Genesis: The Birth of a Global Scholarly Shadow Library](https://www.crimrxiv.com/pub/9tgl8fnu/release/1).” In _CrimRxiv_. Preprint, September 26, 2024.
