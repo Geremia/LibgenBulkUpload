@@ -37,7 +37,7 @@ def login():
     firefox_service = Service(executable_path="/usr/bin/geckodriver")
     driver = webdriver.Firefox(service = firefox_service)
     print("Logging in. ", end='')
-    driver.get('https://libgen.bz/librarian.php')
+    driver.get('https://libgen.la/librarian.php')
 
     driver.add_cookie({'name':'phpbb3_9na6l_u', 'value':'1602'})
     driver.add_cookie({'name':'phpbb3_9na6l_k', 'value':''})
@@ -45,7 +45,7 @@ def login():
 
     driver.find_element(By.LINK_TEXT, 'Login').click()
     print("Logged in.")
-    driver.get('https://libgen.bz/librarian.php')
+    driver.get('https://libgen.la/librarian.php')
 
 def sortKey(filename):
     return os.path.getsize(upload_dir+filename)
@@ -58,7 +58,7 @@ if len(files) == 0:
 
 login()
 for f in files:
-    driver.get('https://libgen.bz/librarian.php')
+    driver.get('https://libgen.la/librarian.php')
     print('\nUploading: '+f)
     while True:
         try:

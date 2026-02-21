@@ -32,6 +32,12 @@ e.g.:
 
 The `populate_upload.bash` script will populate the `upload` folder with symlinks to new files in your `~/CalibreLibrary` that you want to upload. It determines the latest upload file based on the newest file in `uploaded`. It uses the formats specified in the (one per line) `formats.txt` file.
 
+The format of the symlinks is:
+
+    TITLE - AUTHOR-randsf.suffix
+
+where "randsf" is a randoom 6 character string; this is to avoid collisions with other files in the `upload` folder. (If you don't want that suffix a part of the AUTHOR name when uploading with `upload.py`, change `upload.py`'s line "`author = re.sub(r'_$', '.', author)`" to "`author = re.sub(r'_$', '.', author)[:-7]`".)
+
 ## References
 
  - [Calibre](https://calibre-ebook.com/)
