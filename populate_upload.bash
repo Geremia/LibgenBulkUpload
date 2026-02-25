@@ -8,7 +8,7 @@ latest=`date -d @$latest_seconds '+%Y-%m-%d %H:%M:%S'`
 
 cd ../upload
 
-parallel_cmd='filename="$(basename "{}")"; 
+parallel_cmd='filename="$(basename {})"; 
 random_part=$(mktemp -u XXXXXX); 
 suffix=".${filename##*.}"; 
 suffix="${suffix%?}";
