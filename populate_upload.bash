@@ -11,7 +11,6 @@ cd ../upload
 parallel_cmd='filename="$(basename {})"; 
 random_part=$(mktemp -u XXXXXX); 
 suffix=".${filename##*.}"; 
-suffix="${suffix%?}";
 newname="${filename%.*}-${random_part}${suffix}"; 
 ln -sv {} "$newname";'
 
