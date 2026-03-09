@@ -11,21 +11,20 @@ from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
+from ftplib import FTP
 
-if len(sys.argv) != 4:
-    print("""3 args required:
+if len(sys.argv) != 3:
+    print("""2 args required:
     relative path of directory of
             (1) files to upload
-            (2) uploaded files
-            (3) rejected files""")
+            (2) uploaded files""")
     sys.exit(1)
 
 upload_dir = os.getcwd()+'/'+sys.argv[1]+'/'
 uploaded_dir = os.getcwd()+'/'+sys.argv[2]+'/'
-rejects_dir = os.getcwd()+'/'+sys.argv[3]+'/'
 
 print("Specified directories:")
-for i in [upload_dir, uploaded_dir, rejects_dir]:
+for i in [upload_dir, uploaded_dir]:
     print(i)
     if not os.path.isdir(i):
         os.mkdir(i)
@@ -64,8 +63,26 @@ for f in files:
             driver.quit()
             login()
             continue
-    file_input = driver.find_element(By.ID, 'addfiletoeditionfile')
-    file_input.send_keys(upload_dir + f)
+
+    if fileSize(f) < 100000000:  # <100MB, ∴ upload via HTML form
+        file_input = driver.find_element(By.ID, 'addfiletoeditionfile')
+        file_input.send_keys(upload_dir + f)
+    else:  #upload via FTP; 🎩-tip: https://stackoverflow.com/a/12613970/1429450
+        try:
+            f_full = upload_dir + f
+            ftp_host = 'ftp.libgen.bz'
+            ftp = FTP(ftp_host)
+            ftp.login()
+            ftp.cwd('upload')
+            ftp.storbinary('STOR ' + f, open(f_full, 'rb'))
+            ftp.quit()
+        except Exception as e:
+            print(f'FTP upload failed: {e}. Skipping.')
+            continue
+        print('Uploaded via FTP.')
+        file_input = driver.find_element(By.ID, 'ftppath')
+        file_input.send_keys('ftp://' + ftp_host + '/upload/' + f)
+
     driver.find_element(By.ID, 'upload-file').click()
     # Wait for page to load. 
     # courtesy: 𝘗𝘺𝘵𝘩𝘰𝘯 𝘛𝘦𝘴𝘵𝘪𝘯𝘨 𝘸𝘪𝘵𝘩 𝘚𝘦𝘭𝘦𝘯𝘪𝘶𝘮 EPUB ref:11.25
@@ -73,7 +90,7 @@ for f in files:
     try:
         WebDriverWait(driver,3600).until(EC.staleness_of(driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/h2/button')))
     except TimeoutException:
-        print('Upload timedout. Continuing.')
+        print('Upload timed-out. Continuing.')
         continue
     except:
         pass
@@ -103,8 +120,7 @@ for f in files:
         title_field = WebDriverWait(driver,1).until(EC.presence_of_element_located((By.ID, "title")))
         print('∃ title field.')
     except TimeoutException:
-        print('Title field not found. Moving to rejects dir.')
-        os.rename(upload_dir+f, rejects_dir+f)
+        print('Title field not found. Continuing.')
         continue
 
     print("Entering data.")
