@@ -12,13 +12,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
-if len(sys.argv) != 5:
-    print("""4 args required:
+if len(sys.argv) != 4:
+    print("""3 args required:
     relative path of directory of
             (1) files to upload
             (2) uploaded files
-            (3) rejected files
-            (4) phpbb3_9na6l_sid session ID""")
+            (3) rejected files""")
     sys.exit(1)
 
 upload_dir = os.getcwd()+'/'+sys.argv[1]+'/'
@@ -37,21 +36,18 @@ def login():
     firefox_service = Service(executable_path="/usr/bin/geckodriver")
     driver = webdriver.Firefox(service = firefox_service)
     print("Logging in. ", end='')
-    driver.get('https://libgen.la/librarian.php')
-
-    driver.add_cookie({'name':'phpbb3_9na6l_u', 'value':'1602'})
-    driver.add_cookie({'name':'phpbb3_9na6l_k', 'value':''})
-    driver.add_cookie({'name':'phpbb3_9na6l_sid', 'value':sys.argv[4]})
-
-    driver.find_element(By.LINK_TEXT, 'Login').click()
+    driver.get('https://libgen.la/community/ucp.php?mode=login')
+    driver.find_element(By.ID, value='username').send_keys('genesis')
+    driver.find_element(By.ID, value='password').send_keys('upload')
+    driver.find_element(By.CLASS_NAME, value='button1').click()
     print("Logged in.")
     driver.get('https://libgen.la/librarian.php')
 
-def sortKey(filename):
+def fileSize(filename):
     return os.path.getsize(upload_dir+filename)
 
 files = os.listdir(upload_dir)
-files = sorted(files, key=sortKey) #ascending sort by size: https://stackoverflow.com/a/20253803/1429450
+files = sorted(files, key=fileSize) #ascending sort by size: https://stackoverflow.com/a/20253803/1429450
 if len(files) == 0:
     print("No books to upload.")
     exit()
