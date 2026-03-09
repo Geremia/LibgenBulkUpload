@@ -12,6 +12,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from ftplib import FTP
+from tqdm import tqdm
 
 if len(sys.argv) != 4:
     print("Usage: upload.py <upload_dir> <uploaded_dir> <libgen_TLD>")
@@ -64,7 +65,8 @@ for f in files:
             login()
             continue
 
-    if fileSize(f) < 100000000:  # <100MB, ∴ upload via HTML form
+    file_bytes = fileSize(f)
+    if file_bytes < 100000000:  # <100MB, ∴ upload via HTML form
         file_input = driver.find_element(By.ID, 'addfiletoeditionfile')
         file_input.send_keys(upload_dir + f)
     else:  #upload via FTP; 🎩-tip: https://stackoverflow.com/a/12613970/1429450
@@ -74,8 +76,14 @@ for f in files:
             ftp = FTP(ftp_host)
             ftp.login()
             ftp.cwd('upload')
-            ftp.storbinary('STOR ' + f, open(f_full, 'rb'))
-            ftp.quit()
+            print('Uploading via FTP…')
+            with tqdm(total=file_bytes,   # cf. https://stackoverflow.com/q/35702052/1429450
+                      unit='B', unit_scale=True,
+                      unit_divisor=1024) as pbar:
+                def cb(data):
+                    pbar.update(len(data))
+                ftp.storbinary('STOR ' + f, open(f_full, 'rb'), callback=cb)
+                ftp.quit()
         except Exception as e:
             print(f'FTP upload failed: {e}. Skipping.')
             continue
