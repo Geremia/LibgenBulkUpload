@@ -2,7 +2,11 @@
 bulk upload files to [http://libgen.la/librarian.php](http://libgen.la/librarian.php) ([Selenium](https://isidore.co/calibre/#panel=book_details&book_id=8602) script)
 
 ## Usage
-```./upload.py to_upload uploaded```
+Example:
+```bash
+./upload.py to_upload uploaded la
+```
+where `la` is the LibGen top-level domain (TLD). See [Open SLUM](https://open-slum.pages.dev/) for currently working TLDs.
 
 So title and author metadata is set on LibGen, uploaded files should be in the [Calibre](https://calibre-ebook.com/) format, e.g.:
 

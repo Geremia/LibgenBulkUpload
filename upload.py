@@ -13,15 +13,13 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from ftplib import FTP
 
-if len(sys.argv) != 3:
-    print("""2 args required:
-    relative path of directory of
-            (1) files to upload
-            (2) uploaded files""")
+if len(sys.argv) != 4:
+    print("Usage: upload.py <upload_dir> <uploaded_dir> <libgen_TLD>")
     sys.exit(1)
 
 upload_dir = os.getcwd()+'/'+sys.argv[1]+'/'
 uploaded_dir = os.getcwd()+'/'+sys.argv[2]+'/'
+libgen_TLD = sys.argv[3]
 
 print("Specified directories:")
 for i in [upload_dir, uploaded_dir]:
@@ -30,17 +28,19 @@ for i in [upload_dir, uploaded_dir]:
         os.mkdir(i)
 print()
 
+libgen_url = 'https://libgen.' + libgen_TLD + '/'
+
 def login():
     global driver
     firefox_service = Service(executable_path="/usr/bin/geckodriver")
     driver = webdriver.Firefox(service = firefox_service)
     print("Logging in. ", end='')
-    driver.get('https://libgen.la/community/ucp.php?mode=login')
+    driver.get(libgen_url + 'community/ucp.php?mode=login')
     driver.find_element(By.ID, value='username').send_keys('genesis')
     driver.find_element(By.ID, value='password').send_keys('upload')
     driver.find_element(By.CLASS_NAME, value='button1').click()
     print("Logged in.")
-    driver.get('https://libgen.la/librarian.php')
+    driver.get(libgen_url + 'librarian.php')
 
 def fileSize(filename):
     return os.path.getsize(upload_dir+filename)
@@ -53,7 +53,7 @@ if len(files) == 0:
 
 login()
 for f in files:
-    driver.get('https://libgen.la/librarian.php')
+    driver.get(libgen_url + 'librarian.php')
     print('\nUploading: '+f)
     while True:
         try:
