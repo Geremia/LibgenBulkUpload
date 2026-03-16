@@ -131,7 +131,7 @@ for f in files:
         print('Title field not found. Continuing.')
         continue
 
-    print("Entering data.")
+    print("Entering data.\t", end='')
     s = re.split(' - ', f)
     #update title field
     title_field = driver.find_element(By.ID, "title")
@@ -144,6 +144,7 @@ for f in files:
     author_field.send_keys(author)
     #Register!
     driver.find_element(By.XPATH, '/html/body/div[2]/button').click()
+    print('Moving to uploaded dir.')
     os.rename(upload_dir+f, uploaded_dir+f)
 
 print('Driver quitting…')
