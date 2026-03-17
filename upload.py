@@ -116,8 +116,8 @@ for f in files:
     # if Bad Gateway
     try:
         print('Checking for presence of Bad Gateway.\t', end='')
-        WebDriverWait(driver,1).until(EC.presence_of_element_located((By.XPATH, "/html/body/center/h1")))
-        print('Bad Gateway found. Continuing.')
+        WebDriverWait(driver,1).until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Bad gateway') or contains(text(), 'A timeout occurred')]")))
+        print('Bad Gateway / timout occurred. Continuing.')
         continue
     except TimeoutException:
         print('Bad Gateway not found.')
